@@ -124,6 +124,6 @@ void Vehicle::drive()
 
             // reset stop watch for next cycle
             lastUpdate = std::chrono::system_clock::now();
-        }
+        } // endif: drive cycle
     } // eof simulation loop
 }
