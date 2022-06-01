@@ -117,7 +117,7 @@ void TrafficLight::cycleThroughPhases()
             }
 
             // move update to message queue using send
-            // TODO:
+            _trafficQueue.send(std::move(_currentPhase));
         }
 
         // reset stop watch
