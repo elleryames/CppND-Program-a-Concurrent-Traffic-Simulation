@@ -48,6 +48,8 @@ void MessageQueue<T>::send(T&& msg)
 TrafficLight::TrafficLight()
 {
     _currentPhase = TrafficLightPhase::red;
+    _trafficQueue = std::make_unique< MessageQueue<TrafficLightPhase> >();
+    
 }
 
 
@@ -63,12 +65,13 @@ void TrafficLight::waitForGreen()
         // simulate some work
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-        if (_trafficQueue.receive() == TrafficLightPhase::green)
+        if (_trafficQueue->receive() == TrafficLightPhase::green)
         {
+            std::cout << "Traffic light has turned green" << std::endl;
             break;
         }
     }
-    
+    return;
 }
 
 
@@ -80,7 +83,7 @@ TrafficLightPhase TrafficLight::getCurrentPhase()
 void TrafficLight::simulate()
 {
     // FP.2b : Finally, the private method „cycleThroughPhases“ should be started in a thread when the public method „simulate“ is called. To do this, use the thread queue in the base class.
-    threads.emplace_back(&TrafficLight::cycleThroughPhases,                     this); 
+    threads.emplace_back(std::thread(&TrafficLight::cycleThroughPhases,                     this)); 
 }
 
 
@@ -128,7 +131,7 @@ void TrafficLight::cycleThroughPhases()
             }
 
             // move update to message queue using send
-            _trafficQueue.send(std::move(_currentPhase));
+            _trafficQueue->send(std::move(_currentPhase));
         }
 
         // reset stop watch

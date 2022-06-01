@@ -47,6 +47,7 @@ Intersection::Intersection()
 {
     _type = ObjectType::objectIntersection;
     _isBlocked = false;
+    _trafficLight = std::make_unique<TrafficLight>();
 }
 
 void Intersection::addStreet(std::shared_ptr<Street> street)
@@ -88,6 +89,8 @@ void Intersection::addVehicleToQueue(std::shared_ptr<Vehicle> vehicle)
     
     // FP.6b : use the methods TrafficLight::getCurrentPhase and TrafficLight::waitForGreen to block the execution until the traffic light turns green.
 
+    _trafficLight->waitForGreen();
+
     lck.unlock();
 }
 
@@ -109,6 +112,7 @@ void Intersection::setIsBlocked(bool isBlocked)
 void Intersection::simulate() // using threads + promises/futures + exceptions
 {
     // FP.6a : In Intersection.h, add a private member _trafficLight of type TrafficLight. At this position, start the simulation of _trafficLight.
+    _trafficLight->simulate();
 
     // launch vehicle queue processing in a thread
     threads.emplace_back(std::thread(&Intersection::processVehicleQueue, this));
