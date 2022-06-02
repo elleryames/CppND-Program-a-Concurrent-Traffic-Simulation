@@ -37,7 +37,6 @@ void MessageQueue<T>::send(T&& msg)
     std::lock_guard<std::mutex> uLock(_mutex);
 
     // add vector to queue
-    std::cout << "   Message #" << msg << " will be sent to the queue" << std::endl;
     _queue.emplace_back(std::move(msg));
     _cond.notify_one(); // Notify client
 }
@@ -45,10 +44,13 @@ void MessageQueue<T>::send(T&& msg)
 
 /* Implementation of class "TrafficLight" */
 
-TrafficLight::TrafficLight()
+TrafficLight::TrafficLight(int intersectionID)
 {
+    _intersectionID = intersectionID;
     _currentPhase = TrafficLightPhase::red;
     _trafficQueue = std::make_unique< MessageQueue<TrafficLightPhase> >();
+
+    std::cout << "Traffic light on intersection # " << _intersectionID << " thread id = " << std::this_thread::get_id() << " set to red " << std::endl;
     
 }
 
@@ -98,7 +100,13 @@ void TrafficLight::cycleThroughPhases()
     std::random_device rdCycleDur;
     std::mt19937 eng(rdCycleDur());
     std::uniform_int_distribution<> distr(4,6);
-    auto cycle_duration = std::chrono::seconds(distr(eng));
+    auto cycle_duration = std::chrono::seconds(distr(eng)).count();
+    std::cout << "  traffic light # " 
+              << _intersectionID 
+              << " has cycle of " 
+              << cycle_duration 
+              << " seconds" 
+              << std::endl;
 
     std::chrono::time_point<std::chrono::system_clock> lastUpdate;
  
@@ -111,17 +119,20 @@ void TrafficLight::cycleThroughPhases()
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
         // compute time difference to stop watch
-        auto timeSinceLastUpdate = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - lastUpdate);
+        auto timeSinceLastUpdate = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - lastUpdate).count();
+
         if (timeSinceLastUpdate >= cycle_duration)
         {
             // toggle light state
             switch (_currentPhase)
             {
             case red:
+                std::cout << "  Traffic Light # " << _intersectionID << " turning green " << std::endl;
                 _currentPhase = green;
                 break;
 
             case green:
+                std::cout << "  Traffic Light # " << _intersectionID << " turning red " << std::endl;
                 _currentPhase = red;
                 break;
 
@@ -132,10 +143,10 @@ void TrafficLight::cycleThroughPhases()
 
             // move update to message queue using send
             _trafficQueue->send(std::move(_currentPhase));
-        }
 
-        // reset stop watch
-        lastUpdate = std::chrono::system_clock::now(); 
+            // reset stop watch
+            lastUpdate = std::chrono::system_clock::now();
+        } 
     }
     
 }

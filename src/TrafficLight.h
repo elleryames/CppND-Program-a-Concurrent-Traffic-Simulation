@@ -41,7 +41,7 @@ class TrafficLight : public TrafficObject
 {
 public:
     // constructor / desctructor
-    TrafficLight();
+    TrafficLight(int intersectionID);
     ~TrafficLight() {};
 
     // getters / setter
@@ -58,6 +58,9 @@ private:
     // FP.4b : create a private member of type MessageQueue for messages of type TrafficLightPhase 
     // and use it within the infinite loop to push each new TrafficLightPhase into it by calling 
     // send in conjunction with move semantics.
+
+    // intersection corresponding to traffic light
+    int _intersectionID;
 
     std::unique_ptr< MessageQueue<TrafficLightPhase> > _trafficQueue;
     

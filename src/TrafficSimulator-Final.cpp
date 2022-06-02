@@ -156,4 +156,10 @@ int main()
     graphics->setBgFilename(backgroundImg);
     graphics->setTrafficObjects(trafficObjects);
     graphics->simulate();
+
+
+    // // Ellery Testing
+    // int tl_num = 1;
+    // TrafficLight testTrafficLight(tl_num);
+    // testTrafficLight.simulate();
 }

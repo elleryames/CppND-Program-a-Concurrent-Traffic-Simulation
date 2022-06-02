@@ -47,7 +47,7 @@ Intersection::Intersection()
 {
     _type = ObjectType::objectIntersection;
     _isBlocked = false;
-    _trafficLight = std::make_unique<TrafficLight>();
+    _trafficLight = std::make_unique<TrafficLight>(_id);
 }
 
 void Intersection::addStreet(std::shared_ptr<Street> street)
@@ -144,12 +144,9 @@ void Intersection::processVehicleQueue()
 bool Intersection::trafficLightIsGreen()
 {
    // please include this part once you have solved the final project tasks
-   /*
-   if (_trafficLight.getCurrentPhase() == TrafficLightPhase::green)
+   if (_trafficLight->getCurrentPhase() == TrafficLightPhase::green)
        return true;
    else
        return false;
-   */
-
-  return true; // makes traffic light permanently green
+  //return true; // makes traffic light permanently green
 } 
