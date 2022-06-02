@@ -97,12 +97,16 @@ void TrafficLight::cycleThroughPhases()
     std::mt19937 eng(rdCycleDur());
     std::uniform_int_distribution<> distr(4,6);
     auto cycle_duration = std::chrono::seconds(distr(eng)).count();
-    std::cout << "  traffic light # " 
+
+    // report traffic light cycle duration
+    std::unique_lock<std::mutex> ulock(_mtx);
+    std::cout << "Traffic light # " 
               << _intersectionID 
               << " has cycle of " 
               << cycle_duration 
               << " seconds" 
               << std::endl;
+    ulock.unlock();
 
     std::chrono::time_point<std::chrono::system_clock> lastUpdate;
  
