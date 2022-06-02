@@ -16,7 +16,7 @@ T MessageQueue<T>::receive()
     std::unique_lock<std::mutex> uLock(_mutex);
     _cond.wait(uLock, [this] { return !_queue.empty(); });
 
-    // remove last vector element from queue
+    // remove front element from queue
     T message = std::move(_queue.front());
     _queue.pop_front();
 
