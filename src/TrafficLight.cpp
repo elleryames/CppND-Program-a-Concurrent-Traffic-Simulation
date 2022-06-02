@@ -65,7 +65,7 @@ void TrafficLight::waitForGreen()
 
         if (_trafficQueue->receive() == TrafficLightPhase::green)
         {
-            std::cout << "Traffic light has turned green" << std::endl;
+            std::cout << "Traffic light # " << _intersectionID << " has turned green" << std::endl;
             break;
         }
     }
@@ -123,12 +123,10 @@ void TrafficLight::cycleThroughPhases()
             switch (_currentPhase)
             {
             case red:
-                std::cout << "  Traffic Light # " << _intersectionID << " turning green " << std::endl;
                 _currentPhase = green;
                 break;
 
             case green:
-                std::cout << "  Traffic Light # " << _intersectionID << " turning red " << std::endl;
                 _currentPhase = red;
                 break;
 
