@@ -63,9 +63,6 @@ private:
     int _intersectionID;
 
     std::unique_ptr< MessageQueue<TrafficLightPhase> > _trafficQueue;
-    
-    std::condition_variable _condition;
-    std::mutex _mutex;
     TrafficLightPhase _currentPhase;
 };
 
